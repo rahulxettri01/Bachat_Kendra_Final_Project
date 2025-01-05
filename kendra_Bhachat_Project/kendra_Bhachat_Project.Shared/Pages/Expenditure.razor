@@ -42,6 +42,10 @@
     string description;
 
     public void submit_button() {
+        if (string.IsNullOrEmpty(description))
+        {
+            description = "no description";
+        }
 
         expenditure expenditures = new expenditure(amount, tag, date.ToString(), description, source);
             Management_List.expenditureList.Add(expenditures);

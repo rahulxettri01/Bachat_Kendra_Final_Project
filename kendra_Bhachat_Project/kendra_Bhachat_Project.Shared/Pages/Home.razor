@@ -9,6 +9,7 @@
                 <th>Amount ($)</th>
                 <th>Date</th>
                 <th>Type</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,7 @@
                     <td>@income.amount</td>
                     <td>@income.date</td>
                     <td>@income.tag</td>
+                    <td>@income.description</td>
                 </tr>
             }
         </tbody>
@@ -55,6 +57,7 @@
                 <th>Amount ($)</th>
                 <th>Date</th>
                 <th>Type</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -67,15 +70,18 @@
                 expensesTotalAmount += expenditure.amount;
 
                 //highest amount
+                //highest amount
                 if (expenditure.amount > highestExpensesAmount)
                 {
-                    highestIncomeAmount = expenditure.amount;
+                    highestExpensesAmount = expenditure.amount;
                 }
+                
                 <tr>
                     <td>@expenditure.source</td>
                     <td>@expenditure.amount</td>
                     <td>@expenditure.date</td>
                     <td>@expenditure.tag</td>
+                    <td>@expenditure.description</td>
                 </tr>
             }
         </tbody>
@@ -101,6 +107,7 @@
                 <th>Amount ($)</th>
                 <th>Date</th>
                 <th>Type</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -122,6 +129,7 @@
                     <td>@debt.amount</td>
                     <td>@debt.date</td>
                     <td>@debt.tag</td>
+                    <td>@debt.description</td>
                 </tr>
             }
         </tbody>

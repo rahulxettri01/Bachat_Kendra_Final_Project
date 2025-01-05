@@ -1,4 +1,5 @@
 ﻿@page "/Income"
+
 <div class="main-content">
 
     <h2>Add Cash Income:</h2>
@@ -22,8 +23,9 @@
         </select>
         <div class="form-group">
             <label for="description">Add Description:</label>
-            <textarea id="description" @bind="description" placeholder="Enter description"></textarea>
+            <input type="text" id="type" name="type" placeholder="Enter desc" />
         </div>
+
         <button type="submit" @onclick="submit_button">Add Income</button>
     </form>
 </div>
@@ -40,11 +42,18 @@
 
     string description;
 
-    public void submit_button() {
 
+    public void submit_button() 
+
+    {
+        if (string.IsNullOrEmpty(description))
+        {
+            description = "no description";
+        }
         incomes income = new incomes(amount, tag, date.ToString(), description, source );
         Management_List.incomeList.Add(income);
         jsonController.AddDataToJSONFile(Management_List.incomeList);
+     
 
     }
 
