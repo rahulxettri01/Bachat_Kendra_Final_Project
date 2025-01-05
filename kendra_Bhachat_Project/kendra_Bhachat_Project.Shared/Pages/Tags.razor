@@ -1,0 +1,16 @@
+﻿@page "/Tags"
+<h3>Tags</h3>
+
+<input type="text" @bind="name" placeholder="Enter source" />
+<button type="submit" @onclick="submit_button">Add Tag</button>
+
+
+@code {
+    string name;
+    public void submit_button(){
+
+        tg tg = new tg(name);
+        Management_List.tgs.Add(tg);
+        jsonController.AddDataToJSONFile(Management_List.tgs);
+    }
+}

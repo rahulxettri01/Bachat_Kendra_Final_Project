@@ -1,0 +1,148 @@
+﻿@page "/Home"
+<div>
+    <h1>Income</h1>
+    @* <label>@Management_List.users.Balance</label> *@
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Amount ($)</th>
+                <th>Date</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                double incomeTotalAmount = 0;
+                double highestIncomeAmount = 0;
+            }
+            @foreach (var income in Management_List.incomeList)
+            {
+                incomeTotalAmount += income.amount;
+
+                //highest amount
+                if (income.amount > highestIncomeAmount)
+                {
+                    highestIncomeAmount = income.amount;
+                }
+                <tr>
+                    <td>@income.source</td>
+                    <td>@income.amount</td>
+                    <td>@income.date</td>
+                    <td>@income.tag</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+                <td><strong>@incomeTotalAmount</strong></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Highest Amount:</strong></td>
+                <td><strong>@highestIncomeAmount</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div>
+    <h1>Expenditure</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Amount ($)</th>
+                <th>Date</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                double expensesTotalAmount = 0;
+                double highestExpensesAmount = 0;
+            }
+            @foreach (var expenditure in Management_List.expenditureList)
+            {
+                expensesTotalAmount += expenditure.amount;
+
+                //highest amount
+                if (expenditure.amount > highestExpensesAmount)
+                {
+                    highestIncomeAmount = expenditure.amount;
+                }
+                <tr>
+                    <td>@expenditure.source</td>
+                    <td>@expenditure.amount</td>
+                    <td>@expenditure.date</td>
+                    <td>@expenditure.tag</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+                <td><strong>@expensesTotalAmount</strong></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Highest Amount:</strong></td>
+                <td><strong>@highestExpensesAmount</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div>
+    <h1>Debt</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Amount ($)</th>
+                <th>Date</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                double debtTotalAmount = 0;
+                double highestdebtAmount = 0;
+            }
+            @foreach (var debt in Management_List.debtList)
+            {
+                debtTotalAmount += debt.amount;
+
+                //highest amount
+                if (debt.amount > highestdebtAmount)
+                {
+                    highestdebtAmount = debt.amount;
+                }
+                <tr>
+                    <td>@debt.source</td>
+                    <td>@debt.amount</td>
+                    <td>@debt.date</td>
+                    <td>@debt.tag</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+                <td><strong>@debtTotalAmount</strong></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Highest Amount:</strong></td>
+                <td><strong>@highestdebtAmount</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+@code {
+
+
+    }
+
+
+
+

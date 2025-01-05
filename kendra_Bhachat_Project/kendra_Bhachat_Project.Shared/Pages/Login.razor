@@ -1,0 +1,44 @@
+﻿@page "/"
+@inject NavigationManager NavManager
+
+<div class="main-content">
+    <h1>Bachat Kendra</h1>
+    <p class="tagline">"Simplify Your Finances, Amplify Your Life."</p>
+    <div class="login-form">
+        <h2>Welcome Back!</h2>
+        <p>Let's sign you in</p>
+        <form method="post" action="/Account/Login">
+            <input type="text" @bind="username" placeholder="Username" required>
+            <input type="password" @bind="password" placeholder="Password" required>
+            <select name="currencyType" required>
+                <option value="" disabled selected>Currency Type</option>
+                <option value="USD">USD</option>
+                <option value="INR">INR</option>
+                <option value="EUR">EUR</option>
+            </select>
+            <button type="submit" @onclick = "loginpage" class="login-button">Login to Continue</button>
+        </form>
+    </div>
+</div>
+
+@code {
+    string username;
+
+    string password;
+
+    string currencyType;
+
+    public void loginpage()
+
+    {
+        if (string.Equals(username,"Rahul") && string.Equals (password,"G")){
+            Management_List.incomeList = jsonController.GetDataFromJsonFile();
+            Management_List.expenditureList = jsonController.GetDataFromJsonForExpensesFile();
+            Management_List.debtList = jsonController.GetDataFromJsonForDebtFile();
+            Management_List.tgs = jsonController.GetDataFromJsonForTagFile();
+            NavManager.NavigateTo("/Home");
+        }
+    }
+
+
+}
