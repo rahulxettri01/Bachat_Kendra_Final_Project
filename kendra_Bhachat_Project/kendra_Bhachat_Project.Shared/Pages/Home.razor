@@ -1,156 +1,133 @@
-﻿@page "/Home"
-<div>
-    <h1>Income</h1>
-    @* <label>@Management_List.users.Balance</label> *@
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Source</th>
-                <th>Amount ($)</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                double incomeTotalAmount = 0;
-                double highestIncomeAmount = 0;
-            }
-            @foreach (var income in Management_List.incomeList)
-            {
-                incomeTotalAmount += income.amount;
+﻿@page "/"
+@inject NavigationManager NavManager
 
-                //highest amount
-                if (income.amount > highestIncomeAmount)
-                {
-                    highestIncomeAmount = income.amount;
-                }
-                <tr>
-                    <td>@income.source</td>
-                    <td>@income.amount</td>
-                    <td>@income.date</td>
-                    <td>@income.tag</td>
-                    <td>@income.description</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
-                <td><strong>@incomeTotalAmount</strong></td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align:right"><strong>Highest Amount:</strong></td>
-                <td><strong>@highestIncomeAmount</strong></td>
-            </tr>
-        </tfoot>
-    </table>
+<div class="main-content">
+    <h1>Bachat Kendra</h1>
+    <p class="tagline">"Simplify Your Finances, Amplify Your Life."</p>
+    <div class="login-form">
+        <h2>Welcome Back!</h2>
+        <p>Let's sign you in</p>
+        <input type="text" @bind="username" placeholder="Username" required>
+        <input type="password" @bind="password" placeholder="Password" required>
+        <select @bind="currencyType" name="currencyType" required>
+            <option value="" disabled selected>Currency Type</option>
+            <option value="USD">USD</option>
+            <option value="INR">INR</option>
+            <option value="EUR">EUR</option>
+        </select>
+        <button type="submit" @onclick="loginpage" class="login-button">Login to Continue</button>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p class="error-message">@errorMessage</p>
+        }
+    </div>
 </div>
 
-<div>
-    <h1>Expenditure</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Source</th>
-                <th>Amount ($)</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                double expensesTotalAmount = 0;
-                double highestExpensesAmount = 0;
-            }
-            @foreach (var expenditure in Management_List.expenditureList)
-            {
-                expensesTotalAmount += expenditure.amount;
-
-                //highest amount
-                //highest amount
-                if (expenditure.amount > highestExpensesAmount)
-                {
-                    highestExpensesAmount = expenditure.amount;
-                }
-                
-                <tr>
-                    <td>@expenditure.source</td>
-                    <td>@expenditure.amount</td>
-                    <td>@expenditure.date</td>
-                    <td>@expenditure.tag</td>
-                    <td>@expenditure.description</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
-                <td><strong>@expensesTotalAmount</strong></td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align:right"><strong>Highest Amount:</strong></td>
-                <td><strong>@highestExpensesAmount</strong></td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
-
-<div>
-    <h1>Debt</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Source</th>
-                <th>Amount ($)</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                double debtTotalAmount = 0;
-                double highestdebtAmount = 0;
-            }
-            @foreach (var debt in Management_List.debtList)
-            {
-                debtTotalAmount += debt.amount;
-
-                //highest amount
-                if (debt.amount > highestdebtAmount)
-                {
-                    highestdebtAmount = debt.amount;
-                }
-                <tr>
-                    <td>@debt.source</td>
-                    <td>@debt.amount</td>
-                    <td>@debt.date</td>
-                    <td>@debt.tag</td>
-                    <td>@debt.description</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
-                <td><strong>@debtTotalAmount</strong></td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align:right"><strong>Highest Amount:</strong></td>
-                <td><strong>@highestdebtAmount</strong></td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
-
-@code {
-
-
+<style>
+    .main-content {
+        width: 80%;
+        max-width: 1200px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        text-align: center;
     }
 
+        /* Header Styles */
+        .main-content h1 {
+            font-size: 24px;
+            color: #4a4a68;
+            margin-bottom: 5px;
+        }
 
+    .tagline {
+        font-size: 14px;
+        color: #7a7a9c;
+        margin-bottom: 20px;
+        font-style: italic;
+    }
 
+    /* Login Form Styles */
+    .login-form h2 {
+        font-size: 20px;
+        color: #000;
+        margin-bottom: 5px;
+    }
 
+    .login-form p {
+        font-size: 14px;
+        color: #bbb;
+        margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        outline: none;
+    }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: #6a4af8;
+            box-shadow: 0 0 5px rgba(106, 74, 248, 0.5);
+        }
+
+    .login-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #6a4af8;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .login-button:hover {
+            background-color: #5735d1;
+        }
+
+        .login-button:active {
+            background-color: #4529a8;
+        }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
+
+@code {
+    string username;
+    string password;
+    string currencyType;
+    string errorMessage;
+
+    public void loginpage()
+    {
+        if (string.Equals(username, "Rahul") && string.Equals(password, "G"))
+        {
+            Management_List.incomeList = jsonController.GetDataFromJsonFile();
+            Management_List.expenditureList = jsonController.GetDataFromJsonForExpensesFile();
+            Management_List.debtList = jsonController.GetDataFromJsonForDebtFile();
+            Management_List.tgs = jsonController.GetDataFromJsonForTagFile();
+            Management_List.User = jsonController.GetDataFromJsonForFileUser();
+            NavManager.NavigateTo("/Dashboard");
+        }
+        else
+        {
+            errorMessage = "Invalid username or password. Please try again.";
+        }
+    }
+}

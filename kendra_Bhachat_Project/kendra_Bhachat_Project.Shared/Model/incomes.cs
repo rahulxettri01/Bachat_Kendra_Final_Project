@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 
 public class incomes
-{
+{   
+    public string type {  get; set; }
+
     public int amount { get; set; }
 
     public string tag { get; set; }
@@ -18,8 +20,9 @@ public class incomes
 
     public string source { get; set; }
 
-    public incomes(int amount, string tag, string date, string description, string source)
+    public incomes(string type,int amount, string tag, string date, string description, string source)
     {
+        this.type = type;
 
         this.amount = amount;
 

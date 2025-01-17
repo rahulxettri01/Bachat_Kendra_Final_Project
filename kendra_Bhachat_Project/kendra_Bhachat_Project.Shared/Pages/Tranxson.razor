@@ -1,0 +1,210 @@
+﻿@page "/Tranxson"
+@inject NavigationManager NavManager
+<style>
+    .transaction-page {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fc;
+    }
+
+    .page-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #111;
+    }
+
+    .btn-add-transaction {
+        background-color: #ff4d67;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+        .btn-add-transaction:hover {
+            background-color: #e03a54;
+        }
+
+    .search-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .filter-dropdown, .filter-date, .filter-input {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 150px;
+    }
+
+    .transaction-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .transaction-table th, .transaction-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .transaction-table th {
+            background-color: #f4f6fb;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .transaction-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .transaction-table tfoot {
+            background-color: #f4f6fb;
+            font-weight: bold;
+        }
+
+            .transaction-table tfoot td {
+                border-top: 2px solid #ddd;
+            }
+</style>
+
+<div class="transaction-page">
+    <h1 class="page-title">Transaction</h1>
+    <div class="mb-3">
+        <button type="submit" @onclick="AddTransaction" class="btn-add-transaction-page"> Add-Transaction</button>
+    </div>
+
+    <!-- Search Filters -->
+    <div class="row search-filters">
+        <div class="col">
+            <select class="form-control filter-dropdown" @bind="SearchType">
+                <option value="">Select Type</option>
+                <option value="Inflow">Inflow</option>
+                <option value="Outflow">Outflow</option>
+            </select>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control filter-input" placeholder="Search by Tag" @bind="SearchTag" />
+        </div>
+        <div class="col">
+            <input type="date" class="form-control filter-date" @bind="StartDate" />
+        </div>
+        <div class="col">
+            <input type="date" class="form-control filter-date" @bind="EndDate" />
+        </div>
+        <div class="col">
+            <button class="btn btn-secondary" @onclick="search">Search</button>
+            <button class="btn btn-outline-secondary" @onclick="ClearSearch">Clear</button>
+        </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <table class="transaction-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Source</th>
+                <th>Type</th>
+                <th>Amount ($)</th>
+                <th>Tag</th>
+                <th>Date</th>
+                <th>DueDate</th>
+                <th>Status</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tranxson in FilteredTransactions)
+            {
+                <tr>
+                    <td>@tranxson.Title</td>
+                    <td>@tranxson.Source</td>
+                    <td>@tranxson.Type</td>
+                    <td>@tranxson.Amount</td>
+                    <td>@tranxson.Tag</td>
+                    <td>@tranxson.Date</td>
+                    <td>@tranxson.DueDate</td>
+                    <td>@tranxson.Status</td>
+                    <td>@tranxson.Note</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="8" style="text-align:right"><strong>Total Transactions:</strong></td>
+                <td><strong>@FilteredTransactions.Count()</strong></td>
+            </tr>
+            <tr>
+                <td colspan="8" style="text-align:right"><strong>Total:</strong></td>
+                <td><strong>@FilteredTransactions.Sum(t => t.Amount)</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+@code {
+    private string SearchType { get; set; }
+    private string SearchTag { get; set; }
+    private DateOnly? StartDate { get; set; }
+    private DateOnly? EndDate { get; set; }
+
+    private List<tranxson> FilteredTransactions { get; set; } = new List<tranxson>();
+
+    protected override void OnInitialized()
+    {
+        FilteredTransactions = jsonController.GetDataFromJsonForTranscxn();
+    }
+
+    public void search()
+    {
+        // Reset to the original transaction list
+        FilteredTransactions = jsonController.GetDataFromJsonForTranscxn();
+
+        // Filter by transaction type
+        if (!string.IsNullOrWhiteSpace(SearchType))
+        {
+            FilteredTransactions = FilteredTransactions.Where(t => t.Type.Equals(SearchType, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        // Filter by tag
+        if (!string.IsNullOrWhiteSpace(SearchTag))
+        {
+            FilteredTransactions = FilteredTransactions.Where(t => t.Tag.Contains(SearchTag, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        // Filter by date range (start date and end date)
+        if (StartDate.HasValue)
+        {
+            FilteredTransactions = FilteredTransactions.Where(t => t.Date >= StartDate.Value).ToList();
+        }
+
+        if (EndDate.HasValue)
+        {
+            FilteredTransactions = FilteredTransactions.Where(t => t.Date <= EndDate.Value).ToList();
+        }
+    }
+
+    private void ClearSearch()
+    {
+        SearchType = string.Empty;
+        SearchTag = string.Empty;
+        StartDate = null;
+        EndDate = null;
+        FilteredTransactions = jsonController.GetDataFromJsonForTranscxn();
+    }
+
+    public void AddTransaction()
+    {
+        NavManager.NavigateTo("/Transaction");
+    }
+}
