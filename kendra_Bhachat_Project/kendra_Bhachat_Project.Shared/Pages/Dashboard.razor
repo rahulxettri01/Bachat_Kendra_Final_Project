@@ -1,0 +1,380 @@
+﻿@page "/Dashboard"
+Welcome to our service.
+
+<style>
+    /* General Styles */
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f8fc;
+    }
+
+    .dashboard-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+    /* Summary Cards */
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .card.green {
+            background-color: #28a745;
+        }
+
+        .card.red {
+            background-color: #dc3545;
+        }
+
+        .card.yellow {
+            background-color: #ffc107;
+        }
+
+        .card.blue {
+            background-color: #007bff;
+        }
+
+    /* Detail Section */
+    .details {
+        display: none;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+        .details.active {
+            display: block;
+        }
+
+        .details h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        table th,
+        table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f0f0f0;
+        }
+
+    .controls {
+        margin-bottom: 20px;
+    }
+
+        .controls button,
+        .controls input,
+        .controls select {
+            margin-right: 10px;
+            padding: 8px 10px;
+            font-size: 1rem;
+        }
+</style>
+
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="header">
+        <h1>@Management_List.User.Name</h1>
+        <p>Your Balance: @Management_List.User.Balance</p>
+
+        <h1>Summary</h1>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+        <div class="card green" onclick="showDetails('income')">Total Income</div>
+        <div class="card red" onclick="showDetails('expenditure')">Total Expenditure</div>
+        <div class="card yellow" onclick="showDetails('debt')">Total Debt</div>
+    </div>
+
+    <!-- Filter, Sort, and Search Controls -->
+    <div class="controls">
+        <select @bind="tag">
+            <option value="">No Tag</option>
+            @for (int i = 0; i < Management_List.tgs.Count; i++)
+            {
+                <option value="@Management_List.tgs[i].name">@Management_List.tgs[i].name</option>
+            }
+        </select>
+        <button type="button" @onclick="filter">Filter</button>
+
+        <input type="text" @bind="source" placeholder="Search by Source" />
+        <button type="button" @onclick="searching">Search</button>
+
+        <button type="button" @onclick="sorting">Sort</button>
+        <button type="button" @onclick="reset">Reset</button>
+    </div>
+
+    <!-- Income Details -->
+    <div class="details" id="income">
+        <h2>Income Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Amount ($)</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+           <tbody>
+    @if (Management_List.incomeList != null && Management_List.incomeList.Any())
+    {
+        double incomeTotalAmount = 0;
+        double highestIncomeAmount = 0;
+
+        foreach (var income in Management_List.incomeList)
+        {
+            incomeTotalAmount += income.amount;
+
+            if (income.amount > highestIncomeAmount)
+            {
+                highestIncomeAmount = income.amount;
+            }
+
+            <tr>
+                <td>@income.source</td>
+                <td>@income.amount</td>
+                <td>@income.date</td>
+                <td>@income.tag</td>
+                <td>@income.description</td>
+            </tr>
+        }
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+                <td colspan="2"><strong>@incomeTotalAmount</strong></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align:right"><strong>Highest Income:</strong></td>
+                <td colspan="2"><strong>@highestIncomeAmount</strong></td>
+            </tr>
+        </tfoot>
+    }
+    else
+    {
+        <tr>
+            <td colspan="5" style="text-align:center">No income records available.</td>
+        </tr>
+    }
+</tbody>
+
+        </table>
+    </div>
+
+    <!-- Other Details Sections (Expenditure, Debt) follow similar structure -->
+    <div class="details" id="expenditure">
+        <h2>Expenditure Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Amount ($)</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Management_List.expenditureList != null && Management_List.expenditureList.Any())
+                {
+                    double expenditureTotalAmount = 0;
+                    double highestExpenditureAmount = 0;
+
+                    foreach (var expenditure in Management_List.expenditureList)
+                    {
+                        expenditureTotalAmount += expenditure.amount;
+
+                        if (expenditure.amount > highestExpenditureAmount)
+                        {
+                            highestExpenditureAmount = expenditure.amount;
+                        }
+
+                        <tr>
+                            <td>@expenditure.source</td>
+                            <td>@expenditure.amount</td>
+                            <td>@expenditure.date</td>
+                            <td>@expenditure.tag</td>
+                            <td>@expenditure.description</td>
+                        </tr>
+                    }
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+                        <td colspan="2"><strong>@expenditureTotalAmount</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align:right"><strong>Highest Expenditure:</strong></td>
+                        <td colspan="2"><strong>@highestExpenditureAmount</strong></td>
+                    </tr>
+                </tfoot>
+                }
+                else
+                {
+                <tr>
+                    <td colspan="5" style="text-align:center">No expenditure records available.</td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="details" id="debt">
+        <h2>Debt Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Amount ($)</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Management_List.debtList != null && Management_List.debtList.Any())
+                {
+                    double debtTotalAmount = 0;
+                    double highestDebtAmount = 0;
+
+                    foreach (var debt in Management_List.debtList)
+                    {
+                        debtTotalAmount += debt.amount;
+
+                        if (debt.amount > highestDebtAmount)
+                        {
+                            highestDebtAmount = debt.amount;
+                        }
+
+                        <tr>
+                            <td>@debt.source</td>
+                            <td>@debt.amount</td>
+                            <td>@debt.date</td>
+                            <td>@debt.tag</td>
+                            <td>@debt.description</td>
+                            <td>@debt.status</td>
+                        </tr>
+                    }
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align:right"><strong>Total:</strong></td>
+                        <td colspan="2"><strong>@debtTotalAmount</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align:right"><strong>Highest Debt:</strong></td>
+                        <td colspan="2"><strong>@highestDebtAmount</strong></td>
+                    </tr>
+                </tfoot>
+                }
+                else
+                {
+                <tr>
+                    <td colspan="5" style="text-align:center">No debt records available.</td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+    function showDetails(sectionId) {
+        // Hide all details sections
+        const detailsSections = document.querySelectorAll('.details');
+        detailsSections.forEach(section => section.classList.remove('active'));
+
+        // Show the selected section
+        const selectedSection = document.getElementById(sectionId);
+        if (selectedSection) {
+            selectedSection.classList.add('active');
+        }
+    }
+</script>
+
+@code {
+    string source;
+    string tag;
+
+    public void sorting()
+    {
+        Management_List.incomeList = Management_List.incomeList.OrderBy(item => item.source).ToList();
+        Management_List.expenditureList = Management_List.expenditureList.OrderBy(item => item.source).ToList();
+        Management_List.debtList = Management_List.debtList.OrderBy(item => item.source).ToList();
+    }
+
+    public void filter()
+    {
+        if (!string.IsNullOrWhiteSpace(tag))
+        {
+            Management_List.incomeList = Management_List.incomeList.Where(item => item.tag == tag).ToList();
+            Management_List.expenditureList = Management_List.expenditureList.Where(item => item.tag == tag).ToList();
+            Management_List.debtList = Management_List.debtList.Where(item => item.tag == tag).ToList();
+        }
+    }
+
+
+    public void searching()
+    {
+        if (!string.IsNullOrWhiteSpace(source))
+        {
+            var searchHelper = new Searching();
+            searchHelper.Search(source);
+        }
+    }
+
+
+    public void reset()
+    {
+        Management_List.incomeList = jsonController.GetDataFromJsonFile();
+        Management_List.expenditureList = jsonController.GetDataFromJsonForExpensesFile();
+        Management_List.debtList = jsonController.GetDataFromJsonForDebtFile();
+        source = string.Empty;
+        tag = string.Empty;
+    }
+}

@@ -2,6 +2,14 @@
 public class jsonController() 
 {
 
+    static string transx = "C:\\Users\\user\\source\\repos\\kendra_Bhachat_Project\\transaction.json";
+    public static void AddDataToJSONFile(List<tranxson> data)
+    {
+        string jsonString = JsonSerializer.Serialize(data);
+        File.WriteAllText(transx, jsonString);
+        Console.WriteLine("Data saved to file.");
+    }
+
     static string userfilename = "C:\\Users\\user\\source\\repos\\kendra_Bhachat_Project\\user.json";
     public static void AddDataToJSONFile(Users data)
     {
@@ -78,10 +86,19 @@ public class jsonController()
         return deserializedTransactionData;
     }
 
-    public static Users GetDataFromJsonForTagFileUser()
+    public static Users GetDataFromJsonForFileUser()
     {
-        string jsonFromFile = File.ReadAllText(tagFile);
+        string jsonFromFile = File.ReadAllText(userfilename);
         Users deserializedTransactionData = JsonSerializer.Deserialize<Users>(jsonFromFile);
+
+        return deserializedTransactionData;
+    }
+
+
+    public static List<tranxson> GetDataFromJsonForTranscxn()
+    {
+        string jsonFromFile = File.ReadAllText(transx);
+        List<tranxson> deserializedTransactionData = JsonSerializer.Deserialize<List<tranxson>>(jsonFromFile);
 
         return deserializedTransactionData;
     }
